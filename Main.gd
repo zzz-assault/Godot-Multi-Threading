@@ -9,6 +9,7 @@ var y_counter : int = 0
 var map : Array = []
 
 func _ready() -> void:
+	map.resize(int(MAP_SIZE.y))
 	for i in range (THREADS_NR):
 		threads.append(Thread.new())
 		_map_gen_y(i)
@@ -22,7 +23,7 @@ func _map_gen_y(thread_i : int) -> void:
 
 func _map_gen_x(thread_data : PoolIntArray) -> PoolIntArray:
 	var map_x : PoolIntArray = [] as PoolIntArray
-	map_x.resize(MAP_SIZE.x)
+	map_x.resize(int(MAP_SIZE.x))
 	var y : int = thread_data[1]
 	for x in int(MAP_SIZE.x):
 			###### ADD HERE YOUR MAP GEN LOGIC ######
@@ -32,7 +33,7 @@ func _map_gen_x(thread_data : PoolIntArray) -> PoolIntArray:
 	return(map_x)
 
 func _map_gen_thread_finished(thread_data : Array) -> void:
-	map.append(threads[thread_data[0]].wait_to_finish())
+	map[thread_data[1]] = threads[thread_data[0]].wait_to_finish()
 	threads_finished_count += 1
 	if y_counter < MAP_SIZE.y:
 		threads_finished_count -= 1
